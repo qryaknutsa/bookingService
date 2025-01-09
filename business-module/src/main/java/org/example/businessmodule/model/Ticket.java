@@ -1,7 +1,6 @@
 package org.example.businessmodule.model;
 
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.json.bind.annotation.JsonbTypeAdapter;
 import jakarta.persistence.*;
@@ -18,46 +17,46 @@ import java.time.ZonedDateTime;
 public class Ticket implements Serializable {
     @Id
     @Column(nullable = false, unique = true)
-    @JsonProperty("id")
+    @SerializedName("id")
     private Long id;
 
     @Column(nullable = false, columnDefinition="TEXT")
-    @JsonProperty("name")
+    @SerializedName("name")
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "coordinates", nullable = false)
-    @JsonProperty("coordinates")
+    @SerializedName("coordinates")
     private Coordinates coordinates;
 
 
     @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-    @JsonProperty("creationDate")
+    @SerializedName("creationDate")
     @Convert(converter = ZonedDateTimeConverter.class)
     private ZonedDateTime creationDate;
 
 
     @Column(nullable = false)
-    @JsonProperty("price")
+    @SerializedName("price")
     private int price;
 
     @Column(nullable = false)
-    @JsonProperty("discount")
+    @SerializedName("discount")
     private double discount;
 
     @Column
-    @JsonProperty("refundable")
+    @SerializedName("refundable")
     private boolean refundable = false;
 
     @Enumerated(EnumType.STRING)
     @Column
-    @JsonProperty("type")
+    @SerializedName("type")
     @JsonbTypeAdapter(TicketTypeAdapter.class)
     private TicketType type;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "person")
-    @JsonProperty("person")
+    @SerializedName("person")
     private Person person;
 
     @Column(name = "eventId")

@@ -11,12 +11,14 @@ import org.example.businessmodule.dto.TicketWrite;
 import org.example.businessmodule.exception.*;
 import org.example.businessmodule.model.Event;
 import org.example.businessmodule.model.Person;
+import org.jboss.ejb3.annotation.Pool;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
+@Pool("soa")
 public class BusinessService implements BusinessServiceRemote {
     @PersistenceContext(unitName = "myPersistenceUnit")
     private EntityManager em;

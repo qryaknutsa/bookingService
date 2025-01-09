@@ -1,6 +1,6 @@
 package org.example.businessmodule.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Convert;
 import org.example.businessmodule.model.tools.ZonedDateTimeConverter;
@@ -15,12 +15,12 @@ public class EventRead implements Serializable {
     private String description;
 
     @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-    @JsonProperty("startTime")
+    @SerializedName("startTime")
     @Convert(converter = ZonedDateTimeConverter.class)
     private ZonedDateTime startTime;
 
     @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-    @JsonProperty("endTime")
+    @SerializedName("endTime")
     @Convert(converter = ZonedDateTimeConverter.class)
     private ZonedDateTime endTime;
 
@@ -41,7 +41,7 @@ public class EventRead implements Serializable {
     private Double discount;
 
 
-    @JsonProperty("ticketsNum")
+    @SerializedName("ticketsNum")
     private Integer ticketsNum;
 
     public EventRead(int id, String title, String description, ZonedDateTime startTime, ZonedDateTime endTime, CoordinatesWrite coordinates, Integer price, Double discount, Integer ticketsNum) {

@@ -1,7 +1,6 @@
 package org.example.businessmodule.model;
 
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 import org.example.businessmodule.enums.Country;
 import org.example.businessmodule.enums.EyeColor;
@@ -14,32 +13,32 @@ import java.io.Serializable;
 public class Person implements Serializable {
     @Id
     @Column(nullable = false, unique = true)
-    @JsonProperty("id")
+    @SerializedName("id")
     private int id;
 
     @Column(nullable = false)
-    @JsonProperty("height")
+    @SerializedName("height")
     private int height;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "eyeColor")
-    @JsonProperty("eyeColor")
+    @SerializedName("eyeColor")
     private EyeColor eyeColor;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "hairColor", nullable = false)
-    @JsonProperty("hairColor")
+    @SerializedName("hairColor")
     private HairColor hairColor;
 
 
     @Enumerated(EnumType.STRING)
     @Column
-    @JsonProperty("nationality")
+    @SerializedName("nationality")
     private Country nationality;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "location", nullable = false)
-    @JsonProperty("location")
+    @SerializedName("location")
     private Location location;
 
     public Person() {

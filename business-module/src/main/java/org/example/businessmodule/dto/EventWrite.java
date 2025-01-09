@@ -1,6 +1,6 @@
 package org.example.businessmodule.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -18,13 +18,13 @@ public class EventWrite implements Serializable {
 
     @CustomNotNull
     @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-    @JsonProperty("startTime")
+    @SerializedName("startTime")
     @FutureOrPresent(message = "Время начала не может быть в прошлом")
     private ZonedDateTime startTime;
 
     @CustomNotNull
     @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-    @JsonProperty("endTime")
+    @SerializedName("endTime")
     @FutureOrPresent(message = "Время окончания не может быть в прошлом")
     private ZonedDateTime endTime;
 
@@ -49,7 +49,7 @@ public class EventWrite implements Serializable {
     @CustomNotNull
     @Positive(message = "Значение должен быть больше нуля")
 //    @DecimalMax(value = "100", message = "Значение не может быть больше 100")
-    @JsonProperty("ticketsNum")
+    @SerializedName("ticketsNum")
     private Integer ticketsNum;
 
     public @DecimalMax(value = "2147483647", message = "Значение не может быть больше возможного 2147483647") @DecimalMin(value = "1", message = "Значение не может быть меньше возможного 1") Integer getPrice() {

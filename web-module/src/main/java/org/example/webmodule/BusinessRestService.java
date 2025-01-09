@@ -21,7 +21,7 @@ public class BusinessRestService {
     @Path("qwe")
     @Produces("application/json")
     public Response getQwe() {
-        return Response.ok("{\"message\": \"qwe\"}").build(); // Возвращаем корректный JSON
+        return Response.ok("{\"message\": \"2 service\"}").build(); // Возвращаем корректный JSON
     }
 
     @GET

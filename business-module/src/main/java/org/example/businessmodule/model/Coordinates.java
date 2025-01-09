@@ -1,6 +1,6 @@
 package org.example.businessmodule.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -12,15 +12,15 @@ public class Coordinates implements Serializable {
     @Id
     @Column(nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("id")
+    @SerializedName("id")
     private int id;
 
     @Column
-    @JsonProperty("x")
+    @SerializedName("x")
     private float x;
 
     @Column(nullable = false)
-    @JsonProperty("y")
+    @SerializedName("y")
     private Float y;
 
     public Coordinates() {

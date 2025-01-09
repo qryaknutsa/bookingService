@@ -1,19 +1,17 @@
 package org.example.businessmodule.exception.tools;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-@JsonRootName("CustomErrorResponse")
 public class CustomErrorResponse implements Serializable {
-    @JsonProperty("title")
+    @SerializedName("title")
     private String title;
 
-    @JsonProperty("detail")
+    @SerializedName("detail")
     private String detail;
 
-    @JsonProperty("instance")
+    @SerializedName("instance")
     private String instance;
 
     public String getTitle() {
