@@ -1,21 +1,24 @@
 package org.example.webmodule;
 
-import jakarta.ejb.EJB;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.example.businessmodule.BusinessServiceRemote;
-import org.example.businessmodule.dto.EventRead;
 import org.example.businessmodule.dto.EventWrite;
+import org.example.webmodule.jndi.JNDIModule;
 
 import java.util.List;
 
 @Path("")
 public class BusinessRestService {
 
-    @EJB
-    private BusinessServiceRemote businessService;
+    private final BusinessServiceRemote businessService;
+
+    public BusinessRestService() {
+        this.businessService = JNDIModule.getBusinessService();
+    }
+
 
     @GET
     @Path("qwe")

@@ -4,7 +4,7 @@
              https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
   <persistence-unit name="myPersistenceUnit">
-    <jta-data-source>java:/PostgresDS</jta-data-source>
+    <jta-data-source>java:/PostgresDS2</jta-data-source>
     <class>org.example.businessmodule.model.Coordinates</class>
     <class>org.example.businessmodule.model.Location</class>
     <class>org.example.businessmodule.model.Event</class>
