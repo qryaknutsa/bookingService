@@ -1,0 +1,6 @@
+{
+  "client-id": "soa",
+  "provider-url": "http://localhost:8081/realms/dive-dev",
+  "ssl-required": "external",
+  "public-client": true
+}

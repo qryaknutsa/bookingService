@@ -9,9 +9,9 @@ import java.util.List;
 
 @Remote
 public interface BusinessServiceRemote {
-    List<EventRead> getAll();
-    EventRead getById(String idStr);
-    Event save(EventWrite dto);
-    void delete(String eventIdStr);
-    Object copyTicketWithDoublePriceAndVip(String ticketIdStr, String personIdStr);
+    List<EventRead> getAll(String token);
+    EventRead getById(String token, String idStr);
+    Event save(String token, EventWrite dto);
+    void delete(String token, String eventIdStr);
+    Object copyTicketWithDoublePriceAndVip(String token, String ticketIdStr, String personIdStr);
 }

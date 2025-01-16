@@ -53,6 +53,27 @@
             <artifactId>jboss-ejb3-ext-api</artifactId>
             <version>2.4.0.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.15.2</version> <!-- Используйте актуальную версию -->
+        </dependency>
+
+
+        <!-- Keycloak -->
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-core</artifactId>
+            <version>25.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.jwt</groupId>
+            <artifactId>microprofile-jwt-auth-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

@@ -39,5 +39,4 @@ public class JNDIModule {
             throw new RuntimeException(ex);
         }
     }
-
 }

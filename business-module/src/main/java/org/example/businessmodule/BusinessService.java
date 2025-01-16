@@ -25,22 +25,25 @@ public class BusinessService implements BusinessServiceRemote {
 
 
     @Override
-    public List<EventRead> getAll() {
+    public List<EventRead> getAll(String token) {
         List<Event> list = em.createQuery("SELECT l FROM Event l", Event.class).getResultList();
         List<EventRead> toReturn = new ArrayList<>();
+        System.out.println("getAll beginning");
 
         for (Event e : list) {
             EventRead eventRead = EventConverter.toEventRead(e);
-            eventRead.setTicketsNum(TicketService.findTicketsByEventId(e.getId()));
+            eventRead.setTicketsNum(TicketService.findTicketsByEventId(token, e.getId()));
             toReturn.add(eventRead);
         }
 
+        System.out.println(toReturn.get(0));
+        System.out.println("getAll end");
         if (toReturn.isEmpty()) throw new CustomNotFound("По вашему запросу мероприятия не найдены.");
         return toReturn;
     }
 
     @Override
-    public EventRead getById(String idStr) {
+    public EventRead getById(String token, String idStr) {
         int id = validateId(idStr);
         Event e = em.find(Event.class, id);
         if (id < 0) {
@@ -53,7 +56,7 @@ public class BusinessService implements BusinessServiceRemote {
     }
 
     @Override
-    public Event save(EventWrite dto) {
+    public Event save(String token, EventWrite dto) {
         Event event = EventConverter.toEvent(dto);
         em.persist(event);
         em.flush();
@@ -66,7 +69,7 @@ public class BusinessService implements BusinessServiceRemote {
         ticket.setDiscount(dto.getDiscount());
         ticket.setEventId(event.getId());
 
-        Object object = TicketService.saveTickets(ticket, dto.getTicketsNum());
+        Object object = TicketService.saveTickets(token, ticket, dto.getTicketsNum());
         List<Integer> tickets = new ArrayList<>();
         String str = "";
         if (object instanceof String) str = (String) object;
@@ -83,7 +86,7 @@ public class BusinessService implements BusinessServiceRemote {
     }
 
     @Override
-    public void delete(String eventIdStr) {
+    public void delete(String token, String eventIdStr) {
         int event_id = validateId(eventIdStr);
         if (event_id < 0) {
             List<String> messages = new ArrayList<>();
@@ -98,7 +101,7 @@ public class BusinessService implements BusinessServiceRemote {
             else if (ZonedDateTime.now().isAfter(event.getEndTime()))
                 throw new TooLateToDelete("Мероприятие уже прошло, отменить невозможно.");
             else {
-                TicketService.deleteTickets(event_id);
+                TicketService.deleteTickets(token, event_id);
                 em.remove(event);
             }
         } else {
@@ -108,7 +111,7 @@ public class BusinessService implements BusinessServiceRemote {
 
 
     @Override
-    public Object copyTicketWithDoublePriceAndVip(String ticketIdStr, String personIdStr) {
+    public Object copyTicketWithDoublePriceAndVip(String token, String ticketIdStr, String personIdStr) {
         int ticketId = 0;
         int personId = 0;
         boolean invalidTicketId = false;
@@ -157,8 +160,8 @@ public class BusinessService implements BusinessServiceRemote {
         }
 
 
-        TicketWithEventWrite foundTicket = TicketService.findTicket(ticketId);
-        Person foundPerson = TicketService.findPerson(personId);
+        TicketWithEventWrite foundTicket = TicketService.findTicket(token, ticketId);
+        Person foundPerson = TicketService.findPerson(token, personId);
 
         if (foundTicket == null) invalidTicketId = true;
         if (foundPerson == null) invalidPersonId = true;
@@ -197,13 +200,12 @@ public class BusinessService implements BusinessServiceRemote {
             newTicket.setPerson(foundTicket.getPerson());
             if (foundTicket.getRefundable() != null) newTicket.setRefundable(foundTicket.getRefundable());
             else newTicket.setRefundable(false);
-            return TicketService.saveTicket(newTicket);
+            return TicketService.saveTicket(token, newTicket);
         } else {
             messages.add("У этого билета нет владельца с данным id.");
             throw new IncorrectParameter(messages);
         }
     }
-
 
 
     private int validateId(String idStr) {

@@ -1,11 +1,9 @@
 package org.example.businessmodule;
 
-
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import jakarta.ejb.Stateless;
+import jakarta.annotation.Resource;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -25,8 +23,9 @@ import java.util.Scanner;
 
 //@Stateless
 public class TicketService {
-    private final static String SPRING_SERVICE_URL = "http://localhost:80/TMA/api/v2/tickets";
+    private final static String SPRING_SERVICE_URL = "http://localhost:65462/TMA/api/v2/tickets";
     private static final String CONSUL_URL = "http://localhost:8500/v1/catalog/service/ticketService";
+
 
     private static String getServiceUrl() throws IOException {
         try {
@@ -53,7 +52,7 @@ public class TicketService {
                 String address = firstNode.get("ServiceAddress").getAsString();
                 int port = firstNode.get("ServicePort").getAsInt();
 //                return "http://" + address + ":" + port + SPRING_SERVICE_URL;
-                return "http://" + address + ":" + "57962" + SPRING_SERVICE_URL;
+                return "http://" + address + ":" + "59775" + SPRING_SERVICE_URL;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,24 +61,28 @@ public class TicketService {
     }
 
 
-    public static Object saveTicket(TicketWrite ticket)  {
+    public static Object saveTicket(String token, TicketWrite ticket) {
         String address = null;
         try {
             address = getServiceUrl();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
         try (Client client = ClientBuilder.newClient()) {
             Response response = client.target(SPRING_SERVICE_URL)
                     .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + token)
                     .post(Entity.entity(ticket, MediaType.APPLICATION_JSON));
+
 
             if (response.getStatus() == 201) return response.readEntity(Ticket.class);
             else throw new TicketServiceNotAvailable(response.readEntity(String.class));
         }
     }
 
-    public static Object saveTickets(TicketWithEventWrite ticket, int num) {
+    public static Object saveTickets(String token,TicketWithEventWrite ticket, int num) {
         List<Integer> ids;
         String address = null;
         try {
@@ -91,6 +94,7 @@ public class TicketService {
         try (Client client = ClientBuilder.newClient()) {
             Response response = client.target(SPRING_SERVICE_URL + "/bulk/" + num)
                     .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + token)
                     .post(Entity.entity(ticket, MediaType.APPLICATION_JSON));
 
             if (response.getStatus() == 201) ids = (List<Integer>) response.readEntity(Object.class);
@@ -100,7 +104,7 @@ public class TicketService {
         return ids;
     }
 
-    public static void deleteTickets(int id) {
+    public static void deleteTickets(String token,int id) {
         String address = null;
         try {
             address = getServiceUrl();
@@ -111,12 +115,13 @@ public class TicketService {
         try (Client client = ClientBuilder.newClient()) {
             Response response = client.target(SPRING_SERVICE_URL + "/bulk/" + id)
                     .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + token)
                     .delete();
             if (response.getStatus() != 204) throw new TicketServiceNotAvailable(response.readEntity(String.class));
         }
     }
 
-    public static Integer findTicketsByEventId(int id) {
+    public static Integer findTicketsByEventId(String token,int id) {
         String address = null;
         try {
             address = getServiceUrl();
@@ -127,13 +132,17 @@ public class TicketService {
         try (Client client = ClientBuilder.newClient()) {
             Response response = client.target(s)
                     .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + token)
                     .get();
+
+            System.out.println("findTicketsByEventId");
             if (response.getStatus() == 200) return response.readEntity(Integer.class);
             else if (response.getStatus() == 404) return null;
             else throw new TicketServiceNotAvailable(response.readEntity(String.class));
         }
     }
-    public static TicketWithEventWrite findTicket(int id) {
+
+    public static TicketWithEventWrite findTicket(String token,int id) {
         String address = null;
         try {
             address = getServiceUrl();
@@ -144,13 +153,16 @@ public class TicketService {
         try (Client client = ClientBuilder.newClient()) {
             Response response = client.target(s)
                     .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + token)
                     .get();
+
             if (response.getStatus() == 200) return response.readEntity(TicketWithEventWrite.class);
             else if (response.getStatus() == 404) return null;
             else throw new TicketServiceNotAvailable(response.readEntity(String.class));
         }
     }
-    public static Person findPerson(int id) {
+
+    public static Person findPerson(String token,int id) {
         String address = null;
         try {
             address = getServiceUrl();
@@ -159,12 +171,17 @@ public class TicketService {
         }
         String s = SPRING_SERVICE_URL + "/people/" + id;
         try (Client client = ClientBuilder.newClient()) {
+
             Response response = client.target(s)
                     .request(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + token)
                     .get();
+
             if (response.getStatus() == 200) return response.readEntity(Person.class);
             else if (response.getStatus() == 404) return null;
             else throw new TicketServiceNotAvailable(response.readEntity(String.class));
         }
     }
+
+
 }

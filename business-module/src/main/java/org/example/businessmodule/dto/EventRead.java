@@ -1,7 +1,7 @@
 package org.example.businessmodule.dto;
 
-import com.google.gson.annotations.SerializedName;
-import jakarta.json.bind.annotation.JsonbDateFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Convert;
 import org.example.businessmodule.model.tools.ZonedDateTimeConverter;
 
@@ -14,25 +14,18 @@ public class EventRead implements Serializable {
 
     private String description;
 
-    @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-    @SerializedName("startTime")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    @JsonProperty("startTime")
     @Convert(converter = ZonedDateTimeConverter.class)
     private ZonedDateTime startTime;
 
-    @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-    @SerializedName("endTime")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    @JsonProperty("endTime")
     @Convert(converter = ZonedDateTimeConverter.class)
     private ZonedDateTime endTime;
 
     private CoordinatesWrite coordinates;
 
-    public LocationWrite getLocation() {
-        return location;
-    }
-
-    public void setLocation(LocationWrite location) {
-        this.location = location;
-    }
 
     private LocationWrite location;
 
@@ -41,7 +34,7 @@ public class EventRead implements Serializable {
     private Double discount;
 
 
-    @SerializedName("ticketsNum")
+    @JsonProperty("ticketsNum")
     private Integer ticketsNum;
 
     public EventRead(int id, String title, String description, ZonedDateTime startTime, ZonedDateTime endTime, CoordinatesWrite coordinates, Integer price, Double discount, Integer ticketsNum) {
@@ -56,7 +49,16 @@ public class EventRead implements Serializable {
         this.ticketsNum = ticketsNum;
     }
 
-    public EventRead(){}
+    public EventRead() {
+    }
+
+    public LocationWrite getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationWrite location) {
+        this.location = location;
+    }
 
     public int getId() {
         return id;
