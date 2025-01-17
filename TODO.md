@@ -8,7 +8,7 @@
 ~~- [ ] создание экземпляра серверов через domain mode~~
 - [x] создание экземпляра серверов через standalone mode
 - [x] настройка ejb в subsystem профиля
-- [ ] keycloak
+- [x] keycloak
 - [x] haproxy
 - [x] надо как-то найти адрес 1 сервиса из консула
 
@@ -21,4 +21,7 @@
   "instance": "http://localhost:8090/bookingService/TMA/api/v2/booking/event/57",
   "title": "Внутренняя ошибка сервера"
   }
-- [ ] понять jndiProperties, зачем нужны, что значит  WFNAM00051: Provider URLs already given via standard mechanism; ignoring legacy property-based connection configuration в логах сервера
+- [x] понять jndiProperties, зачем нужны, что значит  WFNAM00051: Provider URLs already given via standard mechanism; ignoring legacy property-based connection configuration в логах сервера
+
+
+- [ ] Опять проблемы с отображением дат(

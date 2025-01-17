@@ -23,7 +23,7 @@ import java.util.Scanner;
 
 //@Stateless
 public class TicketService {
-    private final static String SPRING_SERVICE_URL = "http://localhost:65462/TMA/api/v2/tickets";
+    private final static String SPRING_SERVICE_URL = "http://localhost:80/TMA/api/v2/tickets";
     private static final String CONSUL_URL = "http://localhost:8500/v1/catalog/service/ticketService";
 
 
@@ -52,7 +52,7 @@ public class TicketService {
                 String address = firstNode.get("ServiceAddress").getAsString();
                 int port = firstNode.get("ServicePort").getAsInt();
 //                return "http://" + address + ":" + port + SPRING_SERVICE_URL;
-                return "http://" + address + ":" + "59775" + SPRING_SERVICE_URL;
+                return "http://" + address + ":" + "80" + SPRING_SERVICE_URL;
             }
         } catch (IOException e) {
             e.printStackTrace();

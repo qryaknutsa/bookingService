@@ -85,10 +85,31 @@
         </dependency>
 
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.18.2</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.12.5</version> <!-- Указать версию Jackson, соответствующую вашей версии Jackson Core -->
+            <version>2.18.2</version>
         </dependency>
+
+
+
+
+<!--        <dependency>-->
+<!--            <groupId>org.glassfish.jersey.core</groupId>-->
+<!--            <artifactId>jersey-server</artifactId>-->
+<!--            <version>4.0.0-M1</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.glassfish.jersey.containers</groupId>-->
+<!--            <artifactId>jersey-container-servlet</artifactId>-->
+<!--            <version>4.0.0-M1</version>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <build>

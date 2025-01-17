@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.example.businessmodule.BusinessServiceRemote;
+import org.example.businessmodule.dto.EventRead;
 import org.example.businessmodule.dto.EventWrite;
 import org.example.webmodule.jndi.JNDIModule;
 import org.wildfly.security.http.oidc.OidcPrincipal;
@@ -47,7 +48,8 @@ public class BusinessRestService {
             String token = oidcPrincipal.getOidcSecurityContext().getTokenString();
 
             System.out.println(token);
-            return Response.ok(businessService.getAll(token)).build();
+            List<EventRead> list = businessService.getAll(token);
+            return Response.ok(list).build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
