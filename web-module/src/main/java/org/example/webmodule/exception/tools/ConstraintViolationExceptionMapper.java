@@ -1,4 +1,4 @@
-package org.example.webmodule.exception;
+package org.example.webmodule.exception.tools;
 
 
 import jakarta.validation.ConstraintViolation;

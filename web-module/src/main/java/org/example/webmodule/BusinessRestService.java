@@ -39,8 +39,8 @@ public class BusinessRestService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("user")
     public Response processBusinessLogic() {
-        System.out.println("processBusinessLogic beginning");
         Principal userPrincipal = httpRequest.getUserPrincipal();
 
         if (userPrincipal instanceof OidcPrincipal) {
@@ -58,6 +58,7 @@ public class BusinessRestService {
     @GET
     @Path("event/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("user")
     public Response getEvent(@PathParam("id") String id) {
         Principal userPrincipal = httpRequest.getUserPrincipal();
 
@@ -75,13 +76,13 @@ public class BusinessRestService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public Response addEvent(@Valid EventWrite dto) {
         Principal userPrincipal = httpRequest.getUserPrincipal();
 
         if (userPrincipal instanceof OidcPrincipal) {
             OidcPrincipal oidcPrincipal = (OidcPrincipal) userPrincipal;
             String token = oidcPrincipal.getOidcSecurityContext().getTokenString();
-            System.out.println("Token: " + token);
 
             Object event = businessService.save(token, dto);
             return Response.status(201).entity(event).build();
@@ -93,13 +94,13 @@ public class BusinessRestService {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("sell/vip/{ticket_id}/{person_id}")
+    @RolesAllowed("admin")
     public Response copyTicketWithDoublePriceAndVip(@PathParam("ticket_id") String ticket_id, @PathParam("person_id") String person_id) {
         Principal userPrincipal = httpRequest.getUserPrincipal();
 
         if (userPrincipal instanceof OidcPrincipal) {
             OidcPrincipal oidcPrincipal = (OidcPrincipal) userPrincipal;
             String token = oidcPrincipal.getOidcSecurityContext().getTokenString();
-            System.out.println("Token: " + token);
 
             Object e = businessService.copyTicketWithDoublePriceAndVip(token, ticket_id, person_id);
             return Response.ok(e).build();
@@ -111,13 +112,13 @@ public class BusinessRestService {
     @DELETE
     @Path("event/{event_id}/cancel")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public Response deleteEvent(@PathParam("event_id") String event_id) {
         Principal userPrincipal = httpRequest.getUserPrincipal();
 
         if (userPrincipal instanceof OidcPrincipal) {
             OidcPrincipal oidcPrincipal = (OidcPrincipal) userPrincipal;
             String token = oidcPrincipal.getOidcSecurityContext().getTokenString();
-            System.out.println("Token: " + token);
 
             businessService.delete(token, event_id);
             return Response.status(204).build();

@@ -1,37 +1,51 @@
 package org.example.webmodule.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
-import org.wildfly.security.http.oidc.OidcPrincipal;
+import jakarta.servlet.http.HttpServletResponse;
+import org.example.businessmodule.exception.tools.CustomErrorResponse;
 
 import java.io.IOException;
-import java.security.Principal;
 
 @WebFilter("/*")
 public class SecurityFilter implements Filter {
 
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        Principal userPrincipal = httpRequest.getUserPrincipal();
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        String method = httpRequest.getMethod();
+        String path = httpRequest.getRequestURI(); // или getServletPath() в зависимости от нужд
 
-        if (userPrincipal instanceof OidcPrincipal) {
-            OidcPrincipal oidcPrincipal = (OidcPrincipal) userPrincipal;
-            String token = oidcPrincipal.getOidcSecurityContext().getTokenString();
+        boolean isAuthorized = false;
 
-            // Сохраняем токен в JNDI-ресурс
-            System.out.println("Token saved in JNDI: " + token);
+
+        if (method.equals("GET")) {
+            isAuthorized = httpRequest.isUserInRole("user") || httpRequest.isUserInRole("admin"); // GET для user и admin
+        } else if (method.equals("POST") || method.equals("PUT") || method.equals("DELETE")) {
+            isAuthorized = httpRequest.isUserInRole("admin"); // POST, PUT, DELETE только для admin
         }
 
-        chain.doFilter(request, response);
+
+        if (isAuthorized) {
+            chain.doFilter(request, response);
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            httpResponse.setContentType("application/json");
+
+            CustomErrorResponse errorResponse = new CustomErrorResponse(
+                    "Ошибка авторизации",
+                    "Недостаточно прав для выполнения этого действия",
+                    ((HttpServletRequest) request).getRequestURL().toString()
+            );
+
+            String jsonResponse = new ObjectMapper().writeValueAsString(errorResponse);
+            httpResponse.getWriter().write(jsonResponse);
+        }
     }
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {}
-
-    @Override
-    public void destroy() {}
 }

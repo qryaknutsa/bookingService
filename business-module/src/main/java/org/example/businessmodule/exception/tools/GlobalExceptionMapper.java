@@ -10,6 +10,7 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import org.example.businessmodule.exception.*;
 import org.example.businessmodule.filter.UriInfoFilter;
+import org.jboss.ejb.client.RequestSendFailedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,28 +27,53 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
 
     @Override
     public Response toResponse(Throwable exception) {
-        if (exception instanceof CustomNotFound) {
-            return eventNotFoundHandler(exception);
-        } else if (exception instanceof MultipleNotFound) {
-            return multipleNotFoundHandler(exception);
-        } else if (exception instanceof InvalidParameter) {
-            return invalidParameterHandler(exception);
-        } else if (exception instanceof TooLateToDelete) {
-            return tooLateToDeleteHandler(exception);
-        } else if (exception instanceof IncorrectParameter) {
-            return incorrectTypeHandler(exception);
-        } else if (exception instanceof TicketServiceNotAvailable) {
-            return ticketServiceNotAvailableHandler(exception);
-        } else if (exception instanceof ProcessingException) {
-            return processingExceptionHandler(exception);
-        } else if (exception instanceof AlreadyVIPException) {
-            return alreadyVipHandler(exception);
-        } else {
-            return exceptionHandler(exception);
-        }
 
+        Throwable cause = unwrapException(exception);
+
+        if (cause instanceof CustomNotFound) {
+            return eventNotFoundHandler(cause);
+        } else if (cause instanceof TicketServiceNotAvailable) {
+            return ticketServiceNotAvailableHandler(cause);
+        } else if (cause instanceof MultipleNotFound) {
+            return multipleNotFoundHandler(cause);
+        } else if (cause instanceof InvalidParameter) {
+            return invalidParameterHandler(cause);
+        } else if (cause instanceof TooLateToDelete) {
+            return tooLateToDeleteHandler(cause);
+        } else if (cause instanceof IncorrectParameter) {
+            return incorrectTypeHandler(cause);
+        } else if (cause instanceof ProcessingException) {
+            return processingExceptionHandler(cause);
+        } else if (cause instanceof AlreadyVIPException) {
+            return alreadyVipHandler(cause);
+        }else if(cause instanceof RequestSendFailedException){
+            return requestSendFailedHandler(cause);
+        } else {
+            return exceptionHandler(cause);
+        }
     }
 
+    private Throwable unwrapException(Throwable exception) {
+        Throwable cause = exception.getCause();
+        if (cause instanceof jakarta.ejb.EJBException || cause instanceof java.lang.reflect.InvocationTargetException) {
+            return unwrapException(cause);
+        }
+        return cause != null ? cause : exception;
+    }
+
+    public Response requestSendFailedHandler(Throwable exception) {
+        RequestSendFailedException rsfe = (RequestSendFailedException) exception;
+        CustomErrorResponse errorResponse = new CustomErrorResponse(
+                SERVICE_UNAVAILABLE,
+                rsfe.getMessage(),
+                getFullURL()
+        );
+
+        return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                .entity(errorResponse)
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
 
     public Response eventNotFoundHandler(Throwable exception) {
         CustomNotFound customNotFound = (CustomNotFound) exception;
@@ -138,7 +164,6 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
                 .entity(errorResponse)
                 .type(MediaType.APPLICATION_JSON)
                 .build();
-
     }
 
 
